@@ -7,16 +7,9 @@ public record PostAirportDTO(
         @NotBlank
         String name,
         @NotBlank
-        String cep,
+        String code,
         @NotBlank
         String country,
         @NotBlank
-        String city,
-        @NotBlank
-        String neighborhood,
-        @NotBlank
-        String street,
-        @NotNull
-        int streetNumber) {
-
+        String city) {
 }

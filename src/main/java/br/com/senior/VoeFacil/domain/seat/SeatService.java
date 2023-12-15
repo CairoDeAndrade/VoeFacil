@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 public class SeatService {
 
@@ -18,6 +20,7 @@ public class SeatService {
     @Autowired
     private AircraftRepository aircraftRepository;
 
+    @Transactional(readOnly = true)
     public Page<GetSeatDTO> listAllSeats(Pageable pageable){
         return seatRepository.findAll(pageable).map(GetSeatDTO::new);
     }
@@ -32,7 +35,8 @@ public class SeatService {
         return new GetSeatDTO(seat);
     }
 
-    public GetSeatDTO findSeatById(Long id){
+    @Transactional(readOnly = true)
+    public GetSeatDTO findSeatById(UUID id){
         var seat = seatRepository.getReferenceById(id);
         return new GetSeatDTO(seat);
     }

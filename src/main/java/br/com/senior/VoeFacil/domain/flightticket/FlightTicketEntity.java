@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity(name = "FlightTicket")
 @Table(name = "flight_ticket")
@@ -19,8 +20,8 @@ import java.time.LocalDateTime;
 public class FlightTicketEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     private BigDecimal totalPrice;
     private String ticketNumber;

@@ -3,6 +3,7 @@ package br.com.senior.VoeFacil.domain.passenger.DTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record PostPassengerDTO(
@@ -11,5 +12,5 @@ public record PostPassengerDTO(
         String email,
         String phone,
         @NotNull
-        LocalDateTime birthDate) {
+        LocalDate birthDate) {
 }

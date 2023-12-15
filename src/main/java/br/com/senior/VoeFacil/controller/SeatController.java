@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("seat")
 public class SeatController {
@@ -32,7 +34,7 @@ public class SeatController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<GetSeatDTO> getSeatById(@PathVariable Long id) {
+    public ResponseEntity<GetSeatDTO> getSeatById(@PathVariable UUID id) {
         var seat = seatService.findSeatById(id);
         return ResponseEntity.ok(seat);
     }

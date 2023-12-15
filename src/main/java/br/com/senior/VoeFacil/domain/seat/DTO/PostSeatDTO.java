@@ -1,12 +1,17 @@
 package br.com.senior.VoeFacil.domain.seat.DTO;
 
 import br.com.senior.VoeFacil.domain.aircraft.AircraftEntity;
+import br.com.senior.VoeFacil.domain.seat.SeatTypeEnum;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
+import java.util.UUID;
 
 public record PostSeatDTO(
         @NotNull
         int seatNumber,
-        String seatClass,
+        @NotBlank
+        SeatTypeEnum seatClass,
         @NotNull
-        Long aircraft_id) {
+        UUID aircraft_id) {
 }

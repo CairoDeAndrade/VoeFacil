@@ -6,6 +6,8 @@ import br.com.senior.VoeFacil.domain.seat.DTO.PostSeatDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity(name = "Seat")
 @Table(name = "seat")
 @Getter
@@ -16,17 +18,19 @@ import lombok.*;
 public class SeatEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     private int seatNumber;
-    private String seatClass;
+
+    @Enumerated(EnumType.STRING)
+    private SeatTypeEnum seatClass;
 
     @ManyToOne
     @JoinColumn(name = "aircraft_id")
     private AircraftEntity aircraft;
 
-    public SeatEntity (int seatNumber, String seatClass, AircraftEntity aircraft) {
+    public SeatEntity (int seatNumber, SeatTypeEnum seatClass, AircraftEntity aircraft) {
         this.seatNumber = seatNumber;
         this.seatClass = seatClass;
         this.aircraft = aircraft;

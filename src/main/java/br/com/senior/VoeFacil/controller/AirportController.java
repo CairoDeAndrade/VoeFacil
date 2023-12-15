@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("airport")
 public class AirportController {
@@ -33,7 +35,7 @@ public class AirportController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<GetAirportDTO> getAirportById(@PathVariable Long id) {
+    public ResponseEntity<GetAirportDTO> getAirportById(@PathVariable UUID id) {
         var airport = airportService.findAirportById(id);
         return ResponseEntity.ok(airport);
     }

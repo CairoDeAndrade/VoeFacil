@@ -5,17 +5,16 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record PostFlightTicketDTO(
-        @NotNull
-        BigDecimal totalPrice,
         @NotBlank
         String ticketNumber,
         LocalDateTime reservationDate,
         @NotNull
-        Long flight_id,
+        UUID flight_id,
         @NotNull
-        Long seat_id,
+        UUID seat_id,
         @NotNull
-        Long passenger_id) {
+        UUID passenger_id) {
 }

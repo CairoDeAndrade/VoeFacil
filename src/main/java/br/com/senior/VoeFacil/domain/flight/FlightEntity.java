@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity(name = "Flight")
 @Table(name = "flight")
@@ -18,15 +19,18 @@ import java.time.LocalDateTime;
 public class FlightEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     private String number;
     private BigDecimal basePrice;
     private int availableSeatsAmount;
     private LocalDateTime departureTime;
     private int durationMinutes;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private FlightStatus status;
+    private boolean delayed;
 
     @ManyToOne
     @JoinColumn(name = "departure_airport_id")
@@ -47,7 +51,8 @@ public class FlightEntity {
         this.availableSeatsAmount = availableSeatsAmount;
         this.departureTime = departureTime;
         this.durationMinutes = durationMinutes;
-        this.status = "SCHEDULED";
+        this.status = FlightStatus.SCHEDULED;
+        this.delayed = false;
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
         this.aircraft = aircraft;

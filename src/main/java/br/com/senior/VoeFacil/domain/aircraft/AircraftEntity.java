@@ -4,6 +4,8 @@ import br.com.senior.VoeFacil.domain.aircraft.DTO.PostAircraftDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity(name = "Aircraft")
 @Table(name = "aircraft")
 @Getter
@@ -14,8 +16,8 @@ import lombok.*;
 public class AircraftEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     private String airline;
     private int capacity;

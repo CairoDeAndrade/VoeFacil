@@ -2,5 +2,7 @@ package br.com.senior.VoeFacil.domain.airport;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AirportRepository extends JpaRepository<AirportEntity, Long> {
+import java.util.UUID;
+
+public interface AirportRepository extends JpaRepository<AirportEntity, UUID> {
 }

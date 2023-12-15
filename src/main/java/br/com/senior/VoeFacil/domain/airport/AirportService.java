@@ -9,12 +9,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 public class AirportService {
 
     @Autowired
     private AirportRepository repository;
 
+    @Transactional(readOnly = true)
     public Page<GetAirportDTO> listAllAirports(Pageable paging) {
         return repository.findAll(paging).map(GetAirportDTO::new);
     }
@@ -26,7 +29,8 @@ public class AirportService {
         return new GetAirportDTO(airport);
     }
 
-    public GetAirportDTO findAirportById(Long id){
+    @Transactional(readOnly = true)
+    public GetAirportDTO findAirportById(UUID id){
         var airport = repository.getReferenceById(id);
         return new GetAirportDTO(airport);
     }

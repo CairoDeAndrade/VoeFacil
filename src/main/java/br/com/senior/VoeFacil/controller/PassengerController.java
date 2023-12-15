@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("passenger")
 public class PassengerController {
@@ -33,7 +35,7 @@ public class PassengerController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<GetPassengerDTO> getPassengerById(@PathVariable Long id) {
+    public ResponseEntity<GetPassengerDTO> getPassengerById(@PathVariable UUID id) {
         var passenger = passengerService.findPassengerById(id);
         return ResponseEntity.ok(passenger);
     }

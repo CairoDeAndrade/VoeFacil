@@ -1,8 +1,10 @@
 package br.com.senior.VoeFacil.domain.airport;
 
+import br.com.senior.VoeFacil.domain.aircraft.AircraftEntity;
 import br.com.senior.VoeFacil.domain.aircraft.DTO.GetAircraftDTO;
 import br.com.senior.VoeFacil.domain.airport.DTO.GetAirportDTO;
 import br.com.senior.VoeFacil.domain.airport.DTO.PostAirportDTO;
+import br.com.senior.VoeFacil.infra.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,4 +37,9 @@ public class AirportService {
         return new GetAirportDTO(airport);
     }
 
+    @Transactional(readOnly = true)
+    public AirportEntity findEntityById(UUID uuid) {
+        return repository.findById(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Aeroporto não encontrado!"));
+    }
 }

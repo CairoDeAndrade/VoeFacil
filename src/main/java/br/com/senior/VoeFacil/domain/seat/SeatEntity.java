@@ -2,10 +2,12 @@ package br.com.senior.VoeFacil.domain.seat;
 
 
 import br.com.senior.VoeFacil.domain.aircraft.AircraftEntity;
+import br.com.senior.VoeFacil.domain.flight.FlightEntity;
 import br.com.senior.VoeFacil.domain.seat.DTO.PostSeatDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "Seat")

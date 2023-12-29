@@ -19,6 +19,7 @@ public record GetFlightDTO(
         int durationMinutes,
         FlightStatus status,
         boolean delayed,
+        boolean deal,
         AirportEntity departureAirport,
         AirportEntity arrivalAirport,
         AircraftEntity aircraft) {
@@ -33,8 +34,9 @@ public record GetFlightDTO(
                 flightEntity.getDurationMinutes(),
                 flightEntity.getStatus(),
                 flightEntity.isDelayed(),
+                flightEntity.isDeal(),
                 flightEntity.getDepartureAirport(),
                 flightEntity.getArrivalAirport(),
-                flightEntity.getAircraft());
+                flightEntity.getSeats().get(0).getAircraft());
     }
 }

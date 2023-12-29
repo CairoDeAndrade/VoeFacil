@@ -14,11 +14,12 @@ public record PostFlightDTO(
         BigDecimal basePrice,
         @NotNull
         LocalDateTime departureTime,
+        @NotNull
         int durationMinutes,
         @NotNull
-        UUID departure_airport_id,
+        UUID departureAirportId,
         @NotNull
-        UUID arrival_airport_id,
+        UUID arrivalAirportId,
         @NotNull
-        UUID aircraft_id) {
+        UUID aircraftId) {
 }

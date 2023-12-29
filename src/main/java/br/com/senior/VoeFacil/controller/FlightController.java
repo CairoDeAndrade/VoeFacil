@@ -53,15 +53,16 @@ public class FlightController {
         return ResponseEntity.ok(flight);
     }
 
-    @GetMapping
+    @GetMapping("/filter")
     public ResponseEntity<Page<GetFlightDTO>> getAvailableFlights(
-            @RequestParam UUID departureAirportId,
-            @RequestParam UUID arrivalAirportId,
+            @RequestParam UUID origin,
+            @RequestParam UUID destination,
             @RequestParam LocalDate date,
             @RequestParam(required = false) SeatTypeEnum seatType,
             Pageable pageable
     ) {
-        return ResponseEntity.ok(flightService.findAvailableFlights(departureAirportId, arrivalAirportId, date, seatType, pageable));
+        var flights = flightService.findAvailableFlights(origin, destination, date, seatType, pageable);
+        return ResponseEntity.ok(flights);
     }
 
 }

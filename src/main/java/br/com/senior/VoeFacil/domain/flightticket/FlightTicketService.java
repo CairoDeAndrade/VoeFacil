@@ -2,6 +2,7 @@ package br.com.senior.VoeFacil.domain.flightticket;
 
 import br.com.senior.VoeFacil.domain.flight.FlightEntity;
 import br.com.senior.VoeFacil.domain.flight.FlightService;
+import br.com.senior.VoeFacil.domain.flight.FlightStatus;
 import br.com.senior.VoeFacil.domain.flightticket.DTO.GetFlightTicketDTO;
 import br.com.senior.VoeFacil.domain.flightticket.DTO.PostFlightTicketDTO;
 import br.com.senior.VoeFacil.domain.passenger.PassengerService;
@@ -43,29 +44,34 @@ public class FlightTicketService {
     @Transactional
     public GetFlightTicketDTO createFlightTicket(PostFlightTicketDTO dto) {
         var flight = flightService.findFlightEntityById(dto.flightId());
+        verifyFlight(flight);
+
         var seat = seatService.findSeatEntityById(dto.seatId());
         var passenger = passengerService.findPassengerEntityById(dto.passengerId());
-
-        validateFlightAndSeatAvailability(flight);
 
         var totalPrice = calculateTotalPrice(flight, seat);
 
         var flightTicket = new FlightTicketEntity(totalPrice, dto.ticketNumber(), dto.reservationDate(), flight, seat, passenger);
 
-        flight.getFlightSeats().stream()
-                .filter(fs -> fs.getSeat().getId().equals(seat.getId()))
-                .findFirst()
-                .ifPresent(fs -> {
-                    fs.setSeatAvailability(false);
-                    flight.setAvailableSeatsAmount(flight.getAvailableSeatsAmount() - 1);
-                });
+        var flightSeat = flight.getFlightSeats().stream()
+                .filter(fs -> fs.isSeatAvailability() && fs.getSeat().getId().equals(seat.getId()))
+                .findFirst();
+
+        if (flightSeat.isEmpty()) {
+            throw new ValidationException("Assento indiponível!");
+        }
+
+        flightSeat.get().setSeatAvailability(false);
+        flight.setAvailableSeatsAmount(flight.getAvailableSeatsAmount() - 1);
 
         flightTicketRepository.save(flightTicket);
         return new GetFlightTicketDTO(flightTicket);
     }
 
-    private void validateFlightAndSeatAvailability(FlightEntity flight) {
-        System.out.println("Entrei");
+    private void verifyFlight(FlightEntity flight) {
+        if (flight.getStatus() != FlightStatus.SCHEDULED) {
+            throw new ValidationException("Voo não pode ser agendado pois já é passada a data de um possível agendamento");
+        }
         if (flight.getAvailableSeatsAmount() <= 0) {
             throw new ValidationException("Não há assento disponível para este voo");
         }

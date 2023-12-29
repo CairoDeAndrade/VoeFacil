@@ -1,4 +1,4 @@
-package br.com.senior.VoeFacil.infra.config;
+package br.com.senior.VoeFacil.infra.cors;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

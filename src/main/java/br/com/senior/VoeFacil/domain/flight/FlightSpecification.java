@@ -12,22 +12,21 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Component
 public class FlightSpecification {
 
-    public static Specification<FlightEntity> byDepartureAirport(UUID departureAirportId) {
+    public static Specification<FlightEntity> byDepartureAirport(String city) {
         return (root, query, builder) ->
                 builder.and(
-                        builder.equal(root.get("departureAirport").get("id"), departureAirportId)
+                        builder.equal(builder.lower(root.get("departureAirport").get("city")), city.toLowerCase())
                 );
     }
 
-    public static Specification<FlightEntity> byArrivalAirport(UUID arrivalAirportId) {
+    public static Specification<FlightEntity> byArrivalAirport(String city) {
         return (root, query, builder) ->
                 builder.and(
-                        builder.equal(root.get("arrivalAirport").get("id"), arrivalAirportId)
+                        builder.equal(builder.lower(root.get("arrivalAirport").get("city")), city.toLowerCase())
                 );
     }
 

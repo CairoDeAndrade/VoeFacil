@@ -4,7 +4,6 @@ import br.com.senior.VoeFacil.domain.flight.DTO.GetFlightDTO;
 import br.com.senior.VoeFacil.domain.flight.DTO.PostFlightDTO;
 import br.com.senior.VoeFacil.domain.flight.DTO.UpdateFlightStatusDTO;
 import br.com.senior.VoeFacil.domain.flight.FlightService;
-import br.com.senior.VoeFacil.domain.flight.FlightStatus;
 import br.com.senior.VoeFacil.domain.seat.SeatTypeEnum;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +54,8 @@ public class FlightController {
 
     @GetMapping("/filter")
     public ResponseEntity<Page<GetFlightDTO>> getAvailableFlights(
-            @RequestParam UUID origin,
-            @RequestParam UUID destination,
+            @RequestParam String origin,
+            @RequestParam String destination,
             @RequestParam LocalDate date,
             @RequestParam(required = false) SeatTypeEnum seatType,
             Pageable pageable

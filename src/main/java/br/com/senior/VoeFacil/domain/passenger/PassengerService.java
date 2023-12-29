@@ -2,6 +2,7 @@ package br.com.senior.VoeFacil.domain.passenger;
 
 import br.com.senior.VoeFacil.domain.passenger.DTO.GetPassengerDTO;
 import br.com.senior.VoeFacil.domain.passenger.DTO.PostPassengerDTO;
+import br.com.senior.VoeFacil.infra.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,4 +35,9 @@ public class PassengerService {
         return new GetPassengerDTO(passenger);
     }
 
+    @Transactional(readOnly = true)
+    public PassengerEntity findPassengerEntityById(UUID id) {
+        return passengerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Passageiro não encontrado!"));
+    }
 }

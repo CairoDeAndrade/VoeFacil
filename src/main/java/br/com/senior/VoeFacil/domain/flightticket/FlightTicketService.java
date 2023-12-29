@@ -1,13 +1,15 @@
 package br.com.senior.VoeFacil.domain.flightticket;
 
-import br.com.senior.VoeFacil.domain.flight.FlightRepository;
+import br.com.senior.VoeFacil.domain.flight.FlightEntity;
+import br.com.senior.VoeFacil.domain.flight.FlightService;
 import br.com.senior.VoeFacil.domain.flightticket.DTO.GetFlightTicketDTO;
 import br.com.senior.VoeFacil.domain.flightticket.DTO.PostFlightTicketDTO;
-import br.com.senior.VoeFacil.domain.passenger.PassengerRepository;
-import br.com.senior.VoeFacil.domain.seat.SeatRepository;
+import br.com.senior.VoeFacil.domain.passenger.PassengerService;
+import br.com.senior.VoeFacil.domain.seat.SeatEntity;
+import br.com.senior.VoeFacil.domain.seat.SeatService;
 import br.com.senior.VoeFacil.domain.seat.SeatTypeEnum;
 import br.com.senior.VoeFacil.infra.exception.ResourceNotFoundException;
-import jakarta.validation.ValidationException;
+import br.com.senior.VoeFacil.infra.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,13 +27,13 @@ public class FlightTicketService {
     private FlightTicketRepository flightTicketRepository;
 
     @Autowired
-    private FlightRepository  flightRepository;
+    private FlightService flightService;
 
     @Autowired
-    private SeatRepository  seatRepository;
+    private SeatService seatService;
 
     @Autowired
-    private PassengerRepository  passengerRepository;
+    private PassengerService passengerService;
 
     @Transactional(readOnly = true)
     public Page<GetFlightTicketDTO> listAllFlightTickets(Pageable pageable){
@@ -39,27 +41,45 @@ public class FlightTicketService {
     }
 
     @Transactional
-    public GetFlightTicketDTO createFlightTicket(PostFlightTicketDTO dto){
-        var flight = flightRepository.findById(dto.flight_id()).orElseThrow();
-        var seat = seatRepository.findById(dto.seat_id()).orElseThrow();
-        var passenger = passengerRepository.findById(dto.passenger_id()).orElseThrow();
+    public GetFlightTicketDTO createFlightTicket(PostFlightTicketDTO dto) {
+        var flight = flightService.findFlightEntityById(dto.flightId());
+        var seat = seatService.findSeatEntityById(dto.seatId());
+        var passenger = passengerService.findPassengerEntityById(dto.passengerId());
 
-        var totalPrice = flight.getBasePrice();
+        validateFlightAndSeatAvailability(flight, seat);
 
-        if (flight.getAvailableSeatsAmount() < 0) {
-            throw new ValidationException("No available seats for this flight");
+        var totalPrice = calculateTotalPrice(flight, seat);
+
+        var flightTicket = new FlightTicketEntity(totalPrice, dto.ticketNumber(), dto.reservationDate(), flight, seat, passenger);
+
+        flight.getFlightSeats().stream()
+                .filter(fs -> fs.getSeat().getId().equals(seat.getId()))
+                .findFirst()
+                .ifPresent(fs -> {
+                    fs.setSeatAvailability(false);
+                    flight.setAvailableSeatsAmount(flight.getAvailableSeatsAmount() - 1);
+                });
+
+        flightTicketRepository.save(flightTicket);
+        return new GetFlightTicketDTO(flightTicket);
+    }
+
+    private void validateFlightAndSeatAvailability(FlightEntity flight, SeatEntity seat) {
+        if (flight.getAvailableSeatsAmount() <= 0) {
+            throw new ValidationException("Não há assento disponível para este voo");
         }
+    }
+
+    private BigDecimal calculateTotalPrice(FlightEntity flight, SeatEntity seat) {
+        var totalPrice = flight.getBasePrice();
 
         if (seat.getSeatClass().equals(SeatTypeEnum.FIRST_CLASS)) {
             totalPrice = totalPrice.add(flight.getBasePrice().multiply(new BigDecimal("0.3")));
         }
 
-        var flightTicket = new FlightTicketEntity(totalPrice, dto.ticketNumber(), dto.reservationDate(), flight, seat, passenger);
-        flight.setAvailableSeatsAmount(flight.getAvailableSeatsAmount() - 1);
-
-        flightTicketRepository.save(flightTicket);
-        return new GetFlightTicketDTO(flightTicket);
+        return totalPrice;
     }
+
 
     @Transactional(readOnly = true)
     public GetFlightTicketDTO findFlightTicketById(UUID id){
@@ -70,7 +90,7 @@ public class FlightTicketService {
     @Transactional
     public void cancelTicket(UUID id) {
         var flightTicket = flightTicketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
-        var flight = flightRepository.findById(flightTicket.getFlight().getId()).orElseThrow(() -> new ResourceNotFoundException("Flight not found"));
+        var flight = flightService.findFlightEntityById(flightTicket.getFlight().getId());
 
         flight.setAvailableSeatsAmount(flight.getAvailableSeatsAmount() + 1);
         flightTicket.setCanceled(true);

@@ -11,9 +11,9 @@ public record PostFlightTicketDTO(
         String ticketNumber,
         LocalDateTime reservationDate,
         @NotNull
-        UUID flight_id,
+        UUID flightId,
         @NotNull
-        UUID seat_id,
+        UUID seatId,
         @NotNull
-        UUID passenger_id) {
+        UUID passengerId) {
 }

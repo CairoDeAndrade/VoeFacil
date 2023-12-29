@@ -79,17 +79,14 @@ public class FlightService {
 
     @Transactional(readOnly = true)
     public GetFlightDTO findFlightById(UUID id){
-        var flight = flightRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Voo não encontrado!"));
-
+        var flight = findFlightEntityById(id);
         return new GetFlightDTO(flight);
     }
 
     @Transactional
     public GetFlightDTO updateFlightStatus(UUID id, UpdateFlightStatusDTO dto) {
 
-        FlightEntity flight = flightRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Voo não encontrado!"));
+        FlightEntity flight = findFlightEntityById(id);
 
         validatePossibleUpdateStatus(flight, dto.status());
 
@@ -105,8 +102,7 @@ public class FlightService {
 
     @Transactional
     public GetFlightDTO delayFlight(UUID id) {
-        FlightEntity flight = flightRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Voo não encontrado!"));
+        FlightEntity flight = findFlightEntityById(id);
         flight.setDelayed(true);
 
         return new GetFlightDTO(flight);
@@ -114,7 +110,7 @@ public class FlightService {
 
     @Transactional(readOnly = true)
     public Page<GetFlightDTO> findAvailableFlights(
-            UUID origin, UUID destination, LocalDate date, SeatTypeEnum seatType, Pageable pageable
+            String origin, String destination, LocalDate date, SeatTypeEnum seatType, Pageable pageable
     ) {
         Specification<FlightEntity> spec = Specification
                 .where(FlightSpecification.byDepartureAirport(origin))
@@ -137,8 +133,7 @@ public class FlightService {
 
     @Transactional
     public GetFlightDTO toggleFlightDeal(UUID id) {
-        FlightEntity flight = flightRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Voo não encontrado!"));
+        FlightEntity flight = findFlightEntityById(id);
 
         flight.setDeal(!flight.isDeal());
         flight = flightRepository.save(flight);
@@ -146,4 +141,9 @@ public class FlightService {
         return new GetFlightDTO(flight);
     }
 
+    @Transactional(readOnly = true)
+    public FlightEntity findFlightEntityById(UUID id) {
+        return flightRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Voo não encontrado!"));
+    }
 }

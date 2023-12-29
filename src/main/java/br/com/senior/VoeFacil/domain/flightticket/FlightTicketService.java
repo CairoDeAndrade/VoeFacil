@@ -46,7 +46,7 @@ public class FlightTicketService {
         var seat = seatService.findSeatEntityById(dto.seatId());
         var passenger = passengerService.findPassengerEntityById(dto.passengerId());
 
-        validateFlightAndSeatAvailability(flight, seat);
+        validateFlightAndSeatAvailability(flight);
 
         var totalPrice = calculateTotalPrice(flight, seat);
 
@@ -64,7 +64,8 @@ public class FlightTicketService {
         return new GetFlightTicketDTO(flightTicket);
     }
 
-    private void validateFlightAndSeatAvailability(FlightEntity flight, SeatEntity seat) {
+    private void validateFlightAndSeatAvailability(FlightEntity flight) {
+        System.out.println("Entrei");
         if (flight.getAvailableSeatsAmount() <= 0) {
             throw new ValidationException("Não há assento disponível para este voo");
         }

@@ -3,6 +3,7 @@ package br.com.senior.VoeFacil.domain.flight;
 import br.com.senior.VoeFacil.domain.airport.AirportEntity;
 import br.com.senior.VoeFacil.domain.flight.DTO.PostFlightDTO;
 import br.com.senior.VoeFacil.domain.flightseat.FlightSeatEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -67,4 +67,11 @@ public class FlightSpecification {
             return builder.exists(subquery);
         };
     }
+
+    public static Specification<FlightEntity> byStatus(FlightStatus status) {
+        return (root, query, builder) ->
+                builder.and(
+                        builder.equal(root.get("status"), status)
+                );
+    }
 }

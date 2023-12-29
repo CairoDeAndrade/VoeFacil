@@ -120,7 +120,8 @@ public class FlightService {
                 .where(FlightSpecification.byDepartureAirport(origin))
                 .and(FlightSpecification.byArrivalAirport(destination))
                 .and(FlightSpecification.byDepartureDate(date))
-                .and(FlightSpecification.byNotCanceled());
+                .and(FlightSpecification.byNotCanceled()
+                .and(FlightSpecification.byStatus(FlightStatus.SCHEDULED)));
 
         if (seatType != null) {
             spec = spec.and(FlightSpecification.bySeatType(seatType));

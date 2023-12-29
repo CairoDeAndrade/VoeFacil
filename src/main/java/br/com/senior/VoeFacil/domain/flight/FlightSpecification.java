@@ -1,5 +1,6 @@
 package br.com.senior.VoeFacil.domain.flight;
 
+import br.com.senior.VoeFacil.domain.flightseat.FlightSeatEntity;
 import br.com.senior.VoeFacil.domain.seat.SeatEntity;
 import br.com.senior.VoeFacil.domain.seat.SeatTypeEnum;
 import jakarta.persistence.criteria.Join;
@@ -50,12 +51,15 @@ public class FlightSpecification {
         return (root, query, builder) -> {
             Subquery<Long> subquery = query.subquery(Long.class);
             Root<FlightEntity> subRoot = subquery.from(FlightEntity.class);
-            Join<FlightEntity, SeatEntity> seatJoin = subRoot.join("seats", JoinType.INNER);
+
+            Join<FlightEntity, FlightSeatEntity> flightSeatsjoin = subRoot.join("flightSeats", JoinType.INNER);
+            Join<FlightSeatEntity, SeatEntity> seatJoin = flightSeatsjoin.join("seat", JoinType.INNER);
 
             subquery.select(builder.literal(1L));
             subquery.where(
                     builder.and(
                             builder.equal(subRoot, root),
+                            builder.equal(flightSeatsjoin.get("seatAvailability"), true),
                             builder.equal(seatJoin.get("seatClass"), seatType)
                     )
             );

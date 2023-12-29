@@ -34,6 +34,8 @@ CREATE TABLE "flight" (
 );
 
 CREATE TABLE "flight_has_seat" (
+  "id" UUID PRIMARY KEY,
+  "seat_availability" BOOLEAN NOT NULL,
   "seat_id" UUID,
   "flight_id" UUID
 );

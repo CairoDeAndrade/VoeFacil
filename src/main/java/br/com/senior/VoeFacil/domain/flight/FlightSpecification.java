@@ -3,10 +3,8 @@ package br.com.senior.VoeFacil.domain.flight;
 import br.com.senior.VoeFacil.domain.flightseat.FlightSeatEntity;
 import br.com.senior.VoeFacil.domain.seat.SeatEntity;
 import br.com.senior.VoeFacil.domain.seat.SeatTypeEnum;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
+import jakarta.persistence.criteria.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -19,15 +17,21 @@ public class FlightSpecification {
     public static Specification<FlightEntity> byDepartureAirport(String city) {
         return (root, query, builder) ->
                 builder.and(
-                        builder.equal(builder.lower(root.get("departureAirport").get("city")), city.toLowerCase())
-                );
+                builder.equal(
+                        builder.function("unaccent", String.class, builder.lower(root.get("departureAirport").get("city"))),
+                        removeAccents(city.toLowerCase())));
     }
 
     public static Specification<FlightEntity> byArrivalAirport(String city) {
         return (root, query, builder) ->
                 builder.and(
-                        builder.equal(builder.lower(root.get("arrivalAirport").get("city")), city.toLowerCase())
-                );
+                builder.equal(
+                        builder.function("unaccent", String.class, builder.lower(root.get("arrivalAirport").get("city"))),
+                        removeAccents(city.toLowerCase())));
+    }
+
+    private static String removeAccents(String input) {
+        return StringUtils.stripAccents(input);
     }
 
     public static Specification<FlightEntity> byNotCanceled() {

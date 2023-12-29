@@ -7,6 +7,7 @@ import br.com.senior.VoeFacil.domain.airport.AirportEntity;
 import br.com.senior.VoeFacil.domain.airport.DTO.GetAirportDTO;
 import br.com.senior.VoeFacil.domain.flight.FlightEntity;
 import br.com.senior.VoeFacil.domain.flight.FlightStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ public record GetFlightDTO(
         String number,
         BigDecimal basePrice,
         int availableSeatsAmount,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime departureTime,
         int durationMinutes,
         FlightStatus status,

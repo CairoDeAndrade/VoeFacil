@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("flightticket")
+@RequestMapping("flight-ticket")
 public class FlightTicketController {
 
     @Autowired
@@ -33,7 +33,7 @@ public class FlightTicketController {
     @PostMapping
     public ResponseEntity<GetFlightTicketDTO> createFlightTicket(@RequestBody @Valid PostFlightTicketDTO dto, UriComponentsBuilder uriBuilder){
         var flightTicket = flightTicketService.createFlightTicket(dto);
-        var uri = uriBuilder.path("/flightticket/{id}").buildAndExpand(flightTicket.id()).toUri();
+        var uri = uriBuilder.path("/flight-ticket/{id}").buildAndExpand(flightTicket.id()).toUri();
         return ResponseEntity.created(uri).body(flightTicket);
     }
 

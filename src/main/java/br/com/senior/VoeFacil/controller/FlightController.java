@@ -55,8 +55,8 @@ public class FlightController {
 
     @GetMapping("/filter")
     public ResponseEntity<Page<GetFlightDTO>> getAvailableFlights(
-            @RequestParam UUID origin,
-            @RequestParam UUID destination,
+            @RequestParam String origin,
+            @RequestParam String destination,
             @RequestParam LocalDate date,
             @RequestParam(required = false) SeatTypeEnum seatType,
             Pageable pageable

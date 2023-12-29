@@ -7,14 +7,11 @@ import br.com.senior.VoeFacil.domain.flight.DTO.PostFlightDTO;
 import br.com.senior.VoeFacil.domain.flight.DTO.UpdateFlightStatusDTO;
 import br.com.senior.VoeFacil.domain.flight.validations.insert.InsertFlightValidator;
 import br.com.senior.VoeFacil.domain.flight.validations.update.UpdateStatusValidator;
+import br.com.senior.VoeFacil.domain.flightseat.FlightSeatEntity;
 import br.com.senior.VoeFacil.domain.seat.SeatEntity;
 import br.com.senior.VoeFacil.domain.seat.SeatService;
 import br.com.senior.VoeFacil.domain.seat.SeatTypeEnum;
 import br.com.senior.VoeFacil.infra.exception.ResourceNotFoundException;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,10 +58,23 @@ public class FlightService {
         var aircraft = aircraftService.findEntityById(dto.aircraftId());
         var seats = seatService.findAllEntitiesByAircraft(aircraft);
 
-        var flight = new FlightEntity(dto, departureAirport, arrivalAirport, seats);
+        var flight = new FlightEntity(dto, departureAirport, arrivalAirport);
+
+        createFlightSeats(flight, seats);
+
         flight = flightRepository.save(flight);
 
         return new GetFlightDTO(flight);
+    }
+
+    private void createFlightSeats(FlightEntity flight, List<SeatEntity> seats) {
+
+        for (SeatEntity seat : seats) {
+            var flightSeat = new FlightSeatEntity(flight, seat, true);
+            flight.getFlightSeats().add(flightSeat);
+        }
+
+        flight.setAvailableSeatsAmount(seats.size());
     }
 
     @Transactional(readOnly = true)
@@ -110,7 +120,8 @@ public class FlightService {
                 .where(FlightSpecification.byDepartureAirport(origin))
                 .and(FlightSpecification.byArrivalAirport(destination))
                 .and(FlightSpecification.byDepartureDate(date))
-                .and(FlightSpecification.byNotCanceled());
+                .and(FlightSpecification.byNotCanceled()
+                .and(FlightSpecification.byStatus(FlightStatus.SCHEDULED)));
 
         if (seatType != null) {
             spec = spec.and(FlightSpecification.bySeatType(seatType));

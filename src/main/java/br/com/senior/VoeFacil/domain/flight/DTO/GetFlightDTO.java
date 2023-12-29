@@ -2,7 +2,9 @@ package br.com.senior.VoeFacil.domain.flight.DTO;
 
 
 import br.com.senior.VoeFacil.domain.aircraft.AircraftEntity;
+import br.com.senior.VoeFacil.domain.aircraft.DTO.GetAircraftDTO;
 import br.com.senior.VoeFacil.domain.airport.AirportEntity;
+import br.com.senior.VoeFacil.domain.airport.DTO.GetAirportDTO;
 import br.com.senior.VoeFacil.domain.flight.FlightEntity;
 import br.com.senior.VoeFacil.domain.flight.FlightStatus;
 
@@ -20,24 +22,25 @@ public record GetFlightDTO(
         FlightStatus status,
         boolean delayed,
         boolean deal,
-        AirportEntity departureAirport,
-        AirportEntity arrivalAirport,
-        AircraftEntity aircraft) {
+        GetAirportDTO departureAirport,
+        GetAirportDTO arrivalAirport,
+        GetAircraftDTO aircraft) {
 
-    public GetFlightDTO(FlightEntity  flightEntity) {
+    public GetFlightDTO(FlightEntity flight) {
         this(
-                flightEntity.getId(),
-                flightEntity.getNumber(),
-                flightEntity.getBasePrice(),
-                flightEntity.getAvailableSeatsAmount(),
-                flightEntity.getDepartureTime(),
-                flightEntity.getDurationMinutes(),
-                flightEntity.getStatus(),
-                flightEntity.isDelayed(),
-                flightEntity.isDeal(),
-                flightEntity.getDepartureAirport(),
-                flightEntity.getArrivalAirport(),
-                flightEntity.getSeats().get(0).getAircraft());
+                flight.getId(),
+                flight.getNumber(),
+                flight.getBasePrice(),
+                flight.getAvailableSeatsAmount(),
+                flight.getDepartureTime(),
+                flight.getDurationMinutes(),
+                flight.getStatus(),
+                flight.isDelayed(),
+                flight.isDeal(),
+                new GetAirportDTO(flight.getDepartureAirport()),
+                new GetAirportDTO(flight.getArrivalAirport()),
+                new GetAircraftDTO(flight.getFlightSeats().get(0).getSeat().getAircraft())
+        );
     }
 
 }

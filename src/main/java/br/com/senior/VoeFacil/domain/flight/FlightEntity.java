@@ -2,12 +2,14 @@ package br.com.senior.VoeFacil.domain.flight;
 
 import br.com.senior.VoeFacil.domain.airport.AirportEntity;
 import br.com.senior.VoeFacil.domain.flight.DTO.PostFlightDTO;
+import br.com.senior.VoeFacil.domain.flightseat.FlightSeatEntity;
 import br.com.senior.VoeFacil.domain.seat.SeatEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,19 +45,13 @@ public class FlightEntity {
     @JoinColumn(name = "arrival_airport_id")
     private AirportEntity arrivalAirport;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "flight_has_seat",
-            joinColumns = @JoinColumn(name = "flight_id"),
-            inverseJoinColumns = @JoinColumn(name = "seat_id")
-    )
-    private List<SeatEntity> seats;
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FlightSeatEntity> flightSeats = new ArrayList<>();
 
 
-    public FlightEntity(PostFlightDTO dto, AirportEntity departureAirport, AirportEntity arrivalAirport, List<SeatEntity> seats) {
+    public FlightEntity(PostFlightDTO dto, AirportEntity departureAirport, AirportEntity arrivalAirport) {
         this.number = dto.number();
         this.basePrice = dto.basePrice();
-        this.availableSeatsAmount = seats.size();
         this.departureTime = dto.departureTime();
         this.durationMinutes = dto.durationMinutes();
         this.status = FlightStatus.SCHEDULED;
@@ -63,6 +59,5 @@ public class FlightEntity {
         this.deal = false;
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
-        this.seats = seats;
     }
 }

@@ -118,4 +118,21 @@ public class FlightService {
 
         return flightRepository.findAll(spec, pageable).map(GetFlightDTO::new);
     }
+
+    @Transactional(readOnly = true)
+    public Page<GetFlightDTO> findDealsFlights(Pageable pageable) {
+        return flightRepository.findByDeal(true, pageable).map(GetFlightDTO::new);
+    }
+
+    @Transactional
+    public GetFlightDTO toggleFlightDeal(UUID id) {
+        FlightEntity flight = flightRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Voo não encontrado!"));
+
+        flight.setDeal(!flight.isDeal());
+        flight = flightRepository.save(flight);
+
+        return new GetFlightDTO(flight);
+    }
+
 }

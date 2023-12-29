@@ -39,4 +39,5 @@ public record GetFlightDTO(
                 flightEntity.getArrivalAirport(),
                 flightEntity.getSeats().get(0).getAircraft());
     }
+
 }

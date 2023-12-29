@@ -65,4 +65,16 @@ public class FlightController {
         return ResponseEntity.ok(flights);
     }
 
+    @GetMapping("/deals")
+    public ResponseEntity<Page<GetFlightDTO>> getDealsFlights(Pageable pageable) {
+        var flights = flightService.findDealsFlights(pageable);
+        return ResponseEntity.ok(flights);
+    }
+
+    @PutMapping("/toggle-deal/{id}")
+    public ResponseEntity<GetFlightDTO> toggleFlightDeal(@PathVariable UUID id) {
+        var flight = flightService.toggleFlightDeal(id);
+        return ResponseEntity.ok(flight);
+    }
+
 }

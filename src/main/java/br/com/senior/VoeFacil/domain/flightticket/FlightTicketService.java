@@ -1,10 +1,8 @@
 package br.com.senior.VoeFacil.domain.flightticket;
 
-import br.com.senior.VoeFacil.domain.flight.FlightEntity;
 import br.com.senior.VoeFacil.domain.flight.FlightRepository;
 import br.com.senior.VoeFacil.domain.flightticket.DTO.GetFlightTicketDTO;
 import br.com.senior.VoeFacil.domain.flightticket.DTO.PostFlightTicketDTO;
-import br.com.senior.VoeFacil.domain.passenger.PassengerEntity;
 import br.com.senior.VoeFacil.domain.passenger.PassengerRepository;
 import br.com.senior.VoeFacil.domain.seat.SeatRepository;
 import br.com.senior.VoeFacil.domain.seat.SeatTypeEnum;
@@ -12,16 +10,13 @@ import br.com.senior.VoeFacil.infra.exception.ResourceNotFoundException;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class FlightTicketService {

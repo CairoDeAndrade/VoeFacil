@@ -1,6 +1,8 @@
 package br.com.senior.VoeFacil.domain.seat;
 
+import br.com.senior.VoeFacil.domain.aircraft.AircraftEntity;
 import br.com.senior.VoeFacil.domain.aircraft.AircraftRepository;
+import br.com.senior.VoeFacil.domain.flight.FlightEntity;
 import br.com.senior.VoeFacil.domain.seat.DTO.GetSeatDTO;
 import br.com.senior.VoeFacil.domain.seat.DTO.PostSeatDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -41,4 +44,8 @@ public class SeatService {
         return new GetSeatDTO(seat);
     }
 
+    @Transactional(readOnly = true)
+    public List<SeatEntity> findAllEntitiesByAircraft(AircraftEntity aircraft) {
+        return seatRepository.findAllByAircraft(aircraft);
+    }
 }

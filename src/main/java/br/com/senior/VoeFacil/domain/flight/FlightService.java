@@ -1,14 +1,20 @@
 package br.com.senior.VoeFacil.domain.flight;
 
-import br.com.senior.VoeFacil.domain.aircraft.AircraftRepository;
-import br.com.senior.VoeFacil.domain.airport.AirportRepository;
+import br.com.senior.VoeFacil.domain.aircraft.AircraftService;
+import br.com.senior.VoeFacil.domain.airport.AirportService;
 import br.com.senior.VoeFacil.domain.flight.DTO.GetFlightDTO;
 import br.com.senior.VoeFacil.domain.flight.DTO.PostFlightDTO;
 import br.com.senior.VoeFacil.domain.flight.DTO.UpdateFlightStatusDTO;
+import br.com.senior.VoeFacil.domain.flight.validations.insert.InsertFlightValidator;
 import br.com.senior.VoeFacil.domain.flight.validations.update.UpdateStatusValidator;
+import br.com.senior.VoeFacil.domain.seat.SeatEntity;
+import br.com.senior.VoeFacil.domain.seat.SeatService;
 import br.com.senior.VoeFacil.domain.seat.SeatTypeEnum;
 import br.com.senior.VoeFacil.infra.exception.ResourceNotFoundException;
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +33,16 @@ public class FlightService {
     private FlightRepository flightRepository;
 
     @Autowired
-    private AirportRepository airportRepository;
+    private AirportService airportService;
 
     @Autowired
-    private AircraftRepository aircraftRepository;
+    private AircraftService aircraftService;
+
+    @Autowired
+    private SeatService seatService;
+
+    @Autowired
+    private List<InsertFlightValidator> insertFlightValidators;
 
     @Autowired
     private List<UpdateStatusValidator> updateStatusValidators;
@@ -42,17 +54,16 @@ public class FlightService {
 
     @Transactional
     public GetFlightDTO createFlight(PostFlightDTO dto){
-        var departureAirport = airportRepository.findById(dto.departure_airport_id())
-                .orElseThrow(() -> new ResourceNotFoundException("Voo não encontrado!"));
+        insertFlightValidators.forEach(v -> v.validate(dto));
 
-        var arrivalAirport = airportRepository.findById(dto.arrival_airport_id())
-                .orElseThrow(() -> new ResourceNotFoundException("Voo não encontrado!"));
+        var departureAirport = airportService.findEntityById(dto.departureAirportId());
+        var arrivalAirport = airportService.findEntityById(dto.arrivalAirportId());
+        var aircraft = aircraftService.findEntityById(dto.aircraftId());
+        var seats = seatService.findAllEntitiesByAircraft(aircraft);
 
-        var aircraft = aircraftRepository.findById(dto.aircraft_id())
-                .orElseThrow(() -> new ResourceNotFoundException("Voo não encontrado!"));
+        var flight = new FlightEntity(dto, departureAirport, arrivalAirport, seats);
+        flight = flightRepository.save(flight);
 
-        var flight = new FlightEntity(dto.number(), dto.basePrice(), aircraft.getCapacity(), dto.departureTime(), dto.durationMinutes(), departureAirport, arrivalAirport, aircraft);
-        flightRepository.save(flight);
         return new GetFlightDTO(flight);
     }
 
@@ -93,13 +104,17 @@ public class FlightService {
 
     @Transactional(readOnly = true)
     public Page<GetFlightDTO> findAvailableFlights(
-            UUID departureAirportId, UUID arrivalAirportId, LocalDate date, SeatTypeEnum seatType, Pageable pageable
+            UUID origin, UUID destination, LocalDate date, SeatTypeEnum seatType, Pageable pageable
     ) {
         Specification<FlightEntity> spec = Specification
-                .where(FlightSpecification.byDepartureAirport(departureAirportId))
-                .and(FlightSpecification.byArrivalAirport(arrivalAirportId))
+                .where(FlightSpecification.byDepartureAirport(origin))
+                .and(FlightSpecification.byArrivalAirport(destination))
                 .and(FlightSpecification.byDepartureDate(date))
                 .and(FlightSpecification.byNotCanceled());
+
+        if (seatType != null) {
+            spec = spec.and(FlightSpecification.bySeatType(seatType));
+        }
 
         return flightRepository.findAll(spec, pageable).map(GetFlightDTO::new);
     }

@@ -1,5 +1,11 @@
 package br.com.senior.VoeFacil.domain.flight;
 
+import br.com.senior.VoeFacil.domain.seat.SeatEntity;
+import br.com.senior.VoeFacil.domain.seat.SeatTypeEnum;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +43,24 @@ public class FlightSpecification {
             LocalDateTime endOfDay = date.atTime(23, 59, 59);
 
             return builder.between(root.get("departureTime"), startOfDay, endOfDay);
+        };
+    }
+
+    public static Specification<FlightEntity> bySeatType(SeatTypeEnum seatType) {
+        return (root, query, builder) -> {
+            Subquery<Long> subquery = query.subquery(Long.class);
+            Root<FlightEntity> subRoot = subquery.from(FlightEntity.class);
+            Join<FlightEntity, SeatEntity> seatJoin = subRoot.join("seats", JoinType.INNER);
+
+            subquery.select(builder.literal(1L));
+            subquery.where(
+                    builder.and(
+                            builder.equal(subRoot, root),
+                            builder.equal(seatJoin.get("seatClass"), seatType)
+                    )
+            );
+
+            return builder.exists(subquery);
         };
     }
 }

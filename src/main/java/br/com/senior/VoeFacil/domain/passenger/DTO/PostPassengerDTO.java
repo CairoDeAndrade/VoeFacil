@@ -8,9 +8,11 @@ import java.time.LocalDateTime;
 
 public record PostPassengerDTO(
         @NotBlank
-        String name,
+        String firstName,
+        @NotBlank
+        String lastName,
+        @NotBlank
         String email,
-        String phone,
-        @NotNull
-        LocalDate birthDate) {
+        @NotBlank
+        String phone) {
 }

@@ -6,8 +6,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record GetPassengerDTO(UUID id, String name, String email, String phone, LocalDate birthDate) {
+public record GetPassengerDTO(UUID id, String firstName, String lastName, String email, String phone) {
     public GetPassengerDTO(PassengerEntity entity) {
-        this(entity.getId(), entity.getName(), entity.getEmail(), entity.getPhone(), entity.getBirthDate());
+        this(entity.getId(), entity.getFirstName(), entity.getLastName(), entity.getEmail(), entity.getPhone());
     }
 }

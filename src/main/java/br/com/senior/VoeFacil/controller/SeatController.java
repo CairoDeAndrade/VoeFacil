@@ -1,5 +1,8 @@
 package br.com.senior.VoeFacil.controller;
 
+import br.com.senior.VoeFacil.domain.flightseat.DTO.GetFlightSeatDTO;
+import br.com.senior.VoeFacil.domain.flightseat.FlightSeatEntity;
+import br.com.senior.VoeFacil.domain.flightseat.FlightSeatService;
 import br.com.senior.VoeFacil.domain.seat.DTO.GetSeatDTO;
 import br.com.senior.VoeFacil.domain.seat.DTO.PostSeatDTO;
 import br.com.senior.VoeFacil.domain.seat.SeatService;
@@ -11,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,6 +23,9 @@ public class SeatController {
 
     @Autowired
     private SeatService seatService;
+
+    @Autowired
+    private FlightSeatService  flightSeatService;
 
     @GetMapping
     public ResponseEntity<Page<GetSeatDTO>> listAllSeats(Pageable paging) {
@@ -33,10 +40,9 @@ public class SeatController {
         return ResponseEntity.created(uri).body(seat);
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<GetSeatDTO> getSeatById(@PathVariable UUID id) {
-        var seat = seatService.findSeatById(id);
-        return ResponseEntity.ok(seat);
+    @GetMapping("/{flightId}")
+    public ResponseEntity<List<GetFlightSeatDTO>> getAllSeatsForFlight(@PathVariable UUID flightId) {
+        List<GetFlightSeatDTO> seats = flightSeatService.getAllSeatsForFlight(flightId);
+        return ResponseEntity.ok(seats);
     }
-
 }

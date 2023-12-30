@@ -1,12 +1,9 @@
 package br.com.senior.VoeFacil.domain.flightticket.DTO;
 
 import br.com.senior.VoeFacil.domain.flight.DTO.GetFlightDTO;
-import br.com.senior.VoeFacil.domain.flight.FlightEntity;
 import br.com.senior.VoeFacil.domain.flightticket.FlightTicketEntity;
 import br.com.senior.VoeFacil.domain.passenger.DTO.GetPassengerDTO;
-import br.com.senior.VoeFacil.domain.passenger.PassengerEntity;
 import br.com.senior.VoeFacil.domain.seat.DTO.GetSeatDTO;
-import br.com.senior.VoeFacil.domain.seat.SeatEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.math.BigDecimal;

@@ -1,7 +1,9 @@
 package br.com.senior.VoeFacil.domain.flight;
 
+import br.com.senior.VoeFacil.domain.flight.DTO.GetFlightSeatsDetailsDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -26,4 +28,12 @@ public interface FlightRepository extends JpaRepository<FlightEntity, UUID>, Jpa
     boolean existsFlightByDepartureTimeAndAircraft(LocalDateTime departureTime, UUID aircraftId);
 
     Page<FlightEntity> findByDeal(boolean deal, Pageable pageable);
+
+    @EntityGraph(attributePaths = "flightSeats")
+    @Query("""
+        SELECT DISTINCT f
+        FROM Flight f
+        WHERE f.id = :id
+        """)
+    Optional<FlightEntity> findFlightWithSeatsById(UUID id);
 }

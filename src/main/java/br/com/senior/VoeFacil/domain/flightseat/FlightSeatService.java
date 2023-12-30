@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class FlightSeatService {
@@ -17,8 +16,6 @@ public class FlightSeatService {
 
     @Transactional(readOnly = true)
     public List<GetFlightSeatDTO> getAllSeatsForFlight(UUID flightId) {
-        return flightSeatRepository.findAllByFlightId(flightId).stream()
-                .map(GetFlightSeatDTO::new)
-                .collect(Collectors.toList());
+        return flightSeatRepository.findAllByFlightId(flightId);
     }
 }

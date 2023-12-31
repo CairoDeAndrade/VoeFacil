@@ -1,6 +1,7 @@
 package br.com.senior.VoeFacil.controller;
 
 import br.com.senior.VoeFacil.domain.flight.DTO.GetFlightDTO;
+import br.com.senior.VoeFacil.domain.flight.DTO.GetFlightSeatsDetailsDTO;
 import br.com.senior.VoeFacil.domain.flight.DTO.PostFlightDTO;
 import br.com.senior.VoeFacil.domain.flight.DTO.UpdateFlightStatusDTO;
 import br.com.senior.VoeFacil.domain.flight.FlightService;
@@ -75,5 +76,4 @@ public class FlightController {
         var flight = flightService.toggleFlightDeal(id);
         return ResponseEntity.ok(flight);
     }
-
 }

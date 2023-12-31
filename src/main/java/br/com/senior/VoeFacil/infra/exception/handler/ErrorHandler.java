@@ -6,10 +6,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class ErrorHandler {
@@ -38,14 +40,17 @@ public class ErrorHandler {
         return ResponseEntity.status(status).body(err);
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<Object> handleError500(Exception ex) {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " +ex.getLocalizedMessage());
-//    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<StandardError> invalidArgument(MethodArgumentNotValidException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = buildError(status, "Erro no(s) argumento(s) passado(s)", e.getLocalizedMessage(), request.getRequestURI());
+
+        return ResponseEntity.status(status).body(err);
+    }
 
     private StandardError buildError(HttpStatus status, String msg, String exceptionMessage, String requestUri) {
         StandardError err = new StandardError();
-        err.setTimestamp(Instant.now());
+        err.setTimestamp(LocalDateTime.now());
         err.setStatus(status.value());
         err.setError(msg);
         err.setMessage(exceptionMessage);

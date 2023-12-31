@@ -3,6 +3,7 @@ package br.com.senior.VoeFacil.domain.flight;
 import br.com.senior.VoeFacil.domain.aircraft.AircraftService;
 import br.com.senior.VoeFacil.domain.airport.AirportService;
 import br.com.senior.VoeFacil.domain.flight.DTO.GetFlightDTO;
+import br.com.senior.VoeFacil.domain.flight.DTO.GetFlightSeatsDetailsDTO;
 import br.com.senior.VoeFacil.domain.flight.DTO.PostFlightDTO;
 import br.com.senior.VoeFacil.domain.flight.DTO.UpdateFlightStatusDTO;
 import br.com.senior.VoeFacil.domain.flight.validations.insert.InsertFlightValidator;

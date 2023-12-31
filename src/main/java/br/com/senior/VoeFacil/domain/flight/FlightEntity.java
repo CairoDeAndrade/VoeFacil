@@ -4,6 +4,7 @@ import br.com.senior.VoeFacil.domain.airport.AirportEntity;
 import br.com.senior.VoeFacil.domain.flight.DTO.PostFlightDTO;
 import br.com.senior.VoeFacil.domain.flightseat.FlightSeatEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -46,6 +47,7 @@ public class FlightEntity {
     private AirportEntity arrivalAirport;
 
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<FlightSeatEntity> flightSeats = new ArrayList<>();
 
 

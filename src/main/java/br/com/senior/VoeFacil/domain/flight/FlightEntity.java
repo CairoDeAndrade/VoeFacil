@@ -51,8 +51,8 @@ public class FlightEntity {
     private List<FlightSeatEntity> flightSeats = new ArrayList<>();
 
 
-    public FlightEntity(PostFlightDTO dto, AirportEntity departureAirport, AirportEntity arrivalAirport) {
-        this.number = dto.number();
+    public FlightEntity(String number, PostFlightDTO dto, AirportEntity departureAirport, AirportEntity arrivalAirport) {
+        this.number = number;
         this.basePrice = dto.basePrice();
         this.departureTime = dto.departureTime();
         this.durationMinutes = dto.durationMinutes();

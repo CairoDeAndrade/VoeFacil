@@ -23,6 +23,4 @@ public interface FlightRepository extends JpaRepository<FlightEntity, UUID>, Jpa
             	AND s.aircraft_id = :aircraftId
             """)
     boolean existsFlightByDepartureTimeAndAircraft(LocalDateTime departureTime, UUID aircraftId);
-
-    Page<FlightEntity> findByDeal(boolean deal, Pageable pageable);
 }

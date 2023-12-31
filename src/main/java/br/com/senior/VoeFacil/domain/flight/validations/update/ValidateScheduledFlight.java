@@ -12,7 +12,7 @@ public class ValidateScheduledFlight implements UpdateStatusValidator {
     public void validate(FlightEntity flight, FlightStatus status) {
         if (flight.getStatus() == FlightStatus.SCHEDULED) {
             if (!(status == FlightStatus.CHECK_IN || status == FlightStatus.CANCELED)) {
-                throw new ValidationException("Status de um Voo agendado pode ser mudado apenas para CHECK_IN, DELAYED ou CANCELED");
+                throw new ValidationException("Status de um Voo agendado pode ser mudado apenas para CHECK_IN ou CANCELED");
             }
         }
     }

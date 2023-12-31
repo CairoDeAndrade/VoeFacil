@@ -13,6 +13,7 @@ import br.com.senior.VoeFacil.domain.seat.SeatEntity;
 import br.com.senior.VoeFacil.domain.seat.SeatService;
 import br.com.senior.VoeFacil.domain.seat.SeatTypeEnum;
 import br.com.senior.VoeFacil.infra.exception.ResourceNotFoundException;
+import br.com.senior.VoeFacil.infra.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -51,7 +53,7 @@ public class FlightService {
     }
 
     @Transactional
-    public GetFlightDTO createFlight(PostFlightDTO dto){
+    public GetFlightDTO createFlight(PostFlightDTO dto) {
         insertFlightValidators.forEach(v -> v.validate(dto));
 
         var departureAirport = airportService.findEntityById(dto.departureAirportId());
@@ -59,8 +61,7 @@ public class FlightService {
         var aircraft = aircraftService.findEntityById(dto.aircraftId());
         var seats = seatService.findAllEntitiesByAircraft(aircraft);
 
-        var flight = new FlightEntity(dto, departureAirport, arrivalAirport);
-
+        var flight = new FlightEntity(generateFlightNumber(), dto, departureAirport, arrivalAirport);
         createFlightSeats(flight, seats);
 
         flight = flightRepository.save(flight);
@@ -68,13 +69,17 @@ public class FlightService {
         return new GetFlightDTO(flight);
     }
 
+    private String generateFlightNumber() {
+        String uuid = String.format("%010d",new BigInteger(UUID.randomUUID().toString().replace("-",""),16));
+        return uuid.substring( uuid.length() - 5);
+    }
+
     private void createFlightSeats(FlightEntity flight, List<SeatEntity> seats) {
+        List<FlightSeatEntity> flightSeats = seats.stream()
+                .map(seat -> new FlightSeatEntity(flight, seat, true))
+                .toList();
 
-        for (SeatEntity seat : seats) {
-            var flightSeat = new FlightSeatEntity(flight, seat, true);
-            flight.getFlightSeats().add(flightSeat);
-        }
-
+        flight.setFlightSeats(flightSeats);
         flight.setAvailableSeatsAmount(seats.size());
     }
 
@@ -104,6 +109,11 @@ public class FlightService {
     @Transactional
     public GetFlightDTO delayFlight(UUID id) {
         FlightEntity flight = findFlightEntityById(id);
+
+        if (flight.getStatus() == FlightStatus.CANCELED) {
+            throw new ValidationException("Voo não pode ser atrasado se já está cancelado");
+        }
+
         flight.setDelayed(true);
 
         return new GetFlightDTO(flight);
@@ -129,7 +139,11 @@ public class FlightService {
 
     @Transactional(readOnly = true)
     public Page<GetFlightDTO> findDealsFlights(Pageable pageable) {
-        return flightRepository.findByDeal(true, pageable).map(GetFlightDTO::new);
+        Specification<FlightEntity> spec = Specification
+                .where(FlightSpecification.byNotCanceled())
+                .and(FlightSpecification.byDeal(true));
+
+        return flightRepository.findAll(spec, pageable).map(GetFlightDTO::new);
     }
 
     @Transactional

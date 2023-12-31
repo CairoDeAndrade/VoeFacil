@@ -77,4 +77,11 @@ public class FlightSpecification {
                         builder.equal(root.get("status"), status)
                 );
     }
+
+    public static Specification<FlightEntity> byDeal(boolean deal) {
+        return (root, query, builder) ->
+                builder.and(
+                        builder.equal(root.get("deal"), deal)
+                );
+    }
 }

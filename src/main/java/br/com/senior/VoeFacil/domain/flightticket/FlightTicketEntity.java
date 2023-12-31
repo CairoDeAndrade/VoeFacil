@@ -40,10 +40,10 @@ public class FlightTicketEntity {
     @JoinColumn(name = "passenger_id")
     private PassengerEntity passenger;
 
-    public FlightTicketEntity (BigDecimal totalPrice, String ticketNumber, LocalDateTime reservationDate, FlightEntity flight, SeatEntity seat, PassengerEntity passenger) {
+    public FlightTicketEntity (BigDecimal totalPrice, String ticketNumber, FlightEntity flight, SeatEntity seat, PassengerEntity passenger) {
         this.totalPrice = totalPrice;
         this.ticketNumber = ticketNumber;
-        this.reservationDate = reservationDate;
+        this.reservationDate = LocalDateTime.now();
         this.canceled = false;
         this.flight = flight;
         this.seat = seat;

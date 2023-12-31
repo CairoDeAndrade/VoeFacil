@@ -19,6 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -50,22 +53,30 @@ public class FlightTicketService {
         var passenger = passengerService.findPassengerEntityById(dto.passengerId());
 
         var totalPrice = calculateTotalPrice(flight, seat);
+        var flightTicket = new FlightTicketEntity(totalPrice, generateTicketNumber(), flight, seat, passenger);
 
-        var flightTicket = new FlightTicketEntity(totalPrice, dto.ticketNumber(), dto.reservationDate(), flight, seat, passenger);
+        updateFlightSeatAvailability(flight, seat);
 
+        flightTicketRepository.save(flightTicket);
+        return new GetFlightTicketDTO(flightTicket);
+    }
+
+    private String generateTicketNumber() {
+        String uuid = String.format("%010d",new BigInteger(UUID.randomUUID().toString().replace("-",""),16));
+        return uuid.substring( uuid.length() - 10);
+    }
+
+    private void updateFlightSeatAvailability(FlightEntity flight, SeatEntity seat) {
         var flightSeat = flight.getFlightSeats().stream()
                 .filter(fs -> fs.isSeatAvailability() && fs.getSeat().getId().equals(seat.getId()))
                 .findFirst();
 
         if (flightSeat.isEmpty()) {
-            throw new ValidationException("Assento indiponível!");
+            throw new ValidationException("Assento indisponível!");
         }
 
         flightSeat.get().setSeatAvailability(false);
         flight.setAvailableSeatsAmount(flight.getAvailableSeatsAmount() - 1);
-
-        flightTicketRepository.save(flightTicket);
-        return new GetFlightTicketDTO(flightTicket);
     }
 
     private void verifyFlight(FlightEntity flight) {
@@ -96,13 +107,35 @@ public class FlightTicketService {
 
     @Transactional
     public void cancelTicket(UUID id) {
-        var flightTicket = flightTicketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
-        var flight = flightService.findFlightEntityById(flightTicket.getFlight().getId());
+        var flightTicket = flightTicketRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket não encontrado"));
+        var flight = flightTicket.getFlight();
+
+        verifyTicketCanceling(flightTicket, flight);
+
+        flightTicket.getFlight().getFlightSeats().stream()
+                .filter(fs -> fs.getSeat().getId().equals(flightTicket.getSeat().getId()))
+                .findFirst()
+                .ifPresent(fs -> fs.setSeatAvailability(true));
 
         flight.setAvailableSeatsAmount(flight.getAvailableSeatsAmount() + 1);
         flightTicket.setCanceled(true);
 
         flightTicketRepository.save(flightTicket);
+    }
+
+    private void verifyTicketCanceling(FlightTicketEntity flightTicket, FlightEntity flight) {
+        if (flightTicket.isCanceled()) {
+            throw new ValidationException("Este ticket já foi cancelado anteriormente");
+        }
+
+        var now = LocalDateTime.now();
+        var departureTime = flight.getDepartureTime();
+        var differenceBetweenFlightAndNow = Duration.between(departureTime, now).toHours();
+
+        if (differenceBetweenFlightAndNow < 24L) {
+            throw new ValidationException("Cancelamento deve ser feito com pelo menos 24 horas de antecedência");
+        }
     }
 
     @Transactional(readOnly = true)

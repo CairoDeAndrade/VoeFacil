@@ -76,9 +76,4 @@ public class FlightController {
         var flight = flightService.toggleFlightDeal(id);
         return ResponseEntity.ok(flight);
     }
-
-    @GetMapping("/seats-details/{id}")
-    public ResponseEntity<GetFlightSeatsDetailsDTO> getFlightSeats(@PathVariable UUID id) {
-        return ResponseEntity.ok(flightService.getFlightSeats(id));
-    }
 }

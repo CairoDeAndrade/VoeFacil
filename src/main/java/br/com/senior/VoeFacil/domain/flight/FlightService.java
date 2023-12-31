@@ -147,12 +147,4 @@ public class FlightService {
         return flightRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Voo não encontrado!"));
     }
-
-    @Transactional(readOnly = true)
-    public GetFlightSeatsDetailsDTO getFlightSeats(UUID id) {
-        var flight = flightRepository.findFlightWithSeatsById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Voo não encontrado!"));
-
-        return new GetFlightSeatsDetailsDTO(flight);
-    }
 }

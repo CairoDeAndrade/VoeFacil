@@ -21,15 +21,15 @@ public class PassengerEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    private String name;
+    private String firstName;
+    private String lastName;
     private String email;
     private String phone;
-    private LocalDate birthDate;
 
     public PassengerEntity(PostPassengerDTO passengerDTO){
-        this.name = passengerDTO.name();
+        this.firstName = passengerDTO.firstName();
+        this.lastName = passengerDTO.lastName();
         this.email = passengerDTO.email();
         this.phone = passengerDTO.phone();
-        this.birthDate = passengerDTO.birthDate();
     }
 }

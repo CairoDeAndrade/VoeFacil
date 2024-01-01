@@ -3,7 +3,6 @@ package br.com.senior.VoeFacil.domain.flight;
 import br.com.senior.VoeFacil.domain.aircraft.AircraftService;
 import br.com.senior.VoeFacil.domain.airport.AirportService;
 import br.com.senior.VoeFacil.domain.flight.DTO.GetFlightDTO;
-import br.com.senior.VoeFacil.domain.flight.DTO.GetFlightSeatsDetailsDTO;
 import br.com.senior.VoeFacil.domain.flight.DTO.PostFlightDTO;
 import br.com.senior.VoeFacil.domain.flight.DTO.UpdateFlightStatusDTO;
 import br.com.senior.VoeFacil.domain.flight.validations.insert.InsertFlightValidator;
@@ -54,6 +53,10 @@ public class FlightService {
 
     @Transactional
     public GetFlightDTO createFlight(PostFlightDTO dto) {
+        if (dto == null) {
+            throw new ValidationException("Informações para criação do voo não podem estar nulas!");
+        }
+
         insertFlightValidators.forEach(v -> v.validate(dto));
 
         var departureAirport = airportService.findEntityById(dto.departureAirportId());
@@ -66,7 +69,7 @@ public class FlightService {
 
         flight = flightRepository.save(flight);
 
-        return new GetFlightDTO(flight);
+        return new GetFlightDTO(flight, aircraft);
     }
 
     private String generateFlightNumber() {
@@ -91,6 +94,9 @@ public class FlightService {
 
     @Transactional
     public GetFlightDTO updateFlightStatus(UUID id, UpdateFlightStatusDTO dto) {
+        if (dto == null) {
+            throw new ValidationException("Status do voo não pode ser nulo!");
+        }
 
         FlightEntity flight = findFlightEntityById(id);
 
@@ -111,10 +117,11 @@ public class FlightService {
         FlightEntity flight = findFlightEntityById(id);
 
         if (flight.getStatus() == FlightStatus.CANCELED) {
-            throw new ValidationException("Voo não pode ser atrasado se já está cancelado");
+            throw new ValidationException("Voo não pode ser atrasado se já está cancelado!");
         }
 
         flight.setDelayed(true);
+        flight = flightRepository.save(flight);
 
         return new GetFlightDTO(flight);
     }

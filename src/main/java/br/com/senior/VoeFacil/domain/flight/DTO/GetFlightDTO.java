@@ -45,4 +45,20 @@ public record GetFlightDTO(
         );
     }
 
+    public GetFlightDTO(FlightEntity flight, AircraftEntity aircraft) {
+        this(
+                flight.getId(),
+                flight.getNumber(),
+                flight.getBasePrice(),
+                flight.getAvailableSeatsAmount(),
+                flight.getDepartureTime(),
+                flight.getDurationMinutes(),
+                flight.getStatus(),
+                flight.isDelayed(),
+                flight.isDeal(),
+                new GetAirportDTO(flight.getDepartureAirport()),
+                new GetAirportDTO(flight.getArrivalAirport()),
+                new GetAircraftDTO(aircraft)
+        );
+    }
 }

@@ -46,6 +46,10 @@ public class FlightTicketService {
 
     @Transactional
     public GetFlightTicketDTO createFlightTicket(PostFlightTicketDTO dto) {
+        if (dto == null) {
+            throw new ValidationException("Informações do ticket não podem ser nulas!");
+        }
+
         var flight = flightService.findFlightEntityById(dto.flightId());
         verifyFlight(flight);
 
@@ -98,10 +102,10 @@ public class FlightTicketService {
         return totalPrice;
     }
 
-
     @Transactional(readOnly = true)
     public GetFlightTicketDTO findFlightTicketById(UUID id){
-        var flightTicket = flightTicketRepository.getReferenceById(id);
+        var flightTicket = flightTicketRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket não encontrado!"));
         return new GetFlightTicketDTO(flightTicket);
     }
 
@@ -146,5 +150,4 @@ public class FlightTicketService {
         Page<FlightTicketEntity> tickets = flightTicketRepository.findByPassengerId(passengerId, paging);
         return tickets.map(GetFlightTicketDTO::new);
     }
-
 }

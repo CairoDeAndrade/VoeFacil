@@ -1,7 +1,6 @@
 package br.com.senior.VoeFacil.controller;
 
 import br.com.senior.VoeFacil.domain.flight.DTO.GetFlightDTO;
-import br.com.senior.VoeFacil.domain.flight.DTO.GetFlightSeatsDetailsDTO;
 import br.com.senior.VoeFacil.domain.flight.DTO.PostFlightDTO;
 import br.com.senior.VoeFacil.domain.flight.DTO.UpdateFlightStatusDTO;
 import br.com.senior.VoeFacil.domain.flight.FlightService;
@@ -32,7 +31,7 @@ public class FlightController {
     }
 
     @PutMapping("update-status/{id}")
-    public ResponseEntity<GetFlightDTO> updateFlightStatus(@PathVariable UUID id, @RequestBody UpdateFlightStatusDTO dto) {
+    public ResponseEntity<GetFlightDTO> updateFlightStatus(@PathVariable UUID id, @RequestBody @Valid UpdateFlightStatusDTO dto) {
         return ResponseEntity.ok(flightService.updateFlightStatus(id, dto));
     }
 

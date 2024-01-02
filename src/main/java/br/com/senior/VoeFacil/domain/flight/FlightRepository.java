@@ -1,7 +1,5 @@
 package br.com.senior.VoeFacil.domain.flight;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +21,5 @@ public interface FlightRepository extends JpaRepository<FlightEntity, UUID>, Jpa
             	AND s.aircraft_id = :aircraftId
             """)
     boolean existsFlightByDepartureTimeAndAircraft(LocalDateTime departureTime, UUID aircraftId);
+
 }

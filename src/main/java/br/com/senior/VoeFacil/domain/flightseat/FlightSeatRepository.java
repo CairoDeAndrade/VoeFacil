@@ -13,6 +13,7 @@ public interface FlightSeatRepository extends JpaRepository<FlightSeatEntity, UU
                 SELECT new br.com.senior.VoeFacil.domain.flightseat.DTO.GetFlightSeatDTO(fse.seat.id, fse.seatAvailability, fse.seat.seatNumber, fse.seat.seatClass)
                 FROM FlightSeat fse
                 WHERE fse.flight.id = :flightId
+                ORDER BY fse.seat.seatNumber ASC
             """)
     List<GetFlightSeatDTO> findAllByFlightId(UUID flightId);
 

@@ -27,12 +27,6 @@ public class SeatController {
     @Autowired
     private FlightSeatService  flightSeatService;
 
-    @GetMapping
-    public ResponseEntity<Page<GetSeatDTO>> listAllSeats(Pageable paging) {
-        var page = seatService.listAllSeats(paging);
-        return ResponseEntity.ok(page);
-    }
-
     @PostMapping
     public ResponseEntity<GetSeatDTO> createSeat(@RequestBody @Valid PostSeatDTO seatDTO, UriComponentsBuilder uriBuilder) {
         var seat = seatService.createSeat(seatDTO);

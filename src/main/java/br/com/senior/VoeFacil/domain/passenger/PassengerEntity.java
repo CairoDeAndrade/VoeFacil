@@ -4,8 +4,6 @@ import br.com.senior.VoeFacil.domain.passenger.DTO.PostPassengerDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "Passenger")

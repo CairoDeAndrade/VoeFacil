@@ -2,6 +2,7 @@ package br.com.senior.VoeFacil.controller;
 
 import br.com.senior.VoeFacil.domain.flightticket.DTO.GetFlightTicketDTO;
 import br.com.senior.VoeFacil.domain.flightticket.DTO.PostFlightTicketDTO;
+import br.com.senior.VoeFacil.domain.flightticket.FlightTicketEntity;
 import br.com.senior.VoeFacil.domain.flightticket.FlightTicketService;
 import br.com.senior.VoeFacil.domain.passenger.PassengerEntity;
 import br.com.senior.VoeFacil.infra.exception.ResourceNotFoundException;

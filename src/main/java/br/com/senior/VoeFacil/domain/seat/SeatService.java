@@ -5,9 +5,8 @@ import br.com.senior.VoeFacil.domain.aircraft.AircraftRepository;
 import br.com.senior.VoeFacil.domain.seat.DTO.GetSeatDTO;
 import br.com.senior.VoeFacil.domain.seat.DTO.PostSeatDTO;
 import br.com.senior.VoeFacil.infra.exception.ResourceNotFoundException;
+import br.com.senior.VoeFacil.infra.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,25 +22,18 @@ public class SeatService {
     @Autowired
     private AircraftRepository aircraftRepository;
 
-    @Transactional(readOnly = true)
-    public Page<GetSeatDTO> listAllSeats(Pageable pageable){
-        return seatRepository.findAll(pageable).map(GetSeatDTO::new);
-    }
-
     @Transactional
     public GetSeatDTO createSeat(PostSeatDTO dto){
+        if (dto == null) {
+            throw new ValidationException("Dados da cadeira não podem ser nulos!");
+        }
+
         var aircraft = aircraftRepository.findById(dto.aircraft_id())
                 .orElseThrow(() -> new ResourceNotFoundException("Aeronave não encontrada"));
 
         var seat = new SeatEntity(dto.seatNumber(), dto.seatClass(), aircraft);
         seatRepository.save(seat);
 
-        return new GetSeatDTO(seat);
-    }
-
-    @Transactional(readOnly = true)
-    public GetSeatDTO findSeatById(UUID id){
-        var seat = findSeatEntityById(id);
         return new GetSeatDTO(seat);
     }
 

@@ -3,7 +3,6 @@ package br.com.senior.VoeFacil.domain.flight.DTO;
 
 import br.com.senior.VoeFacil.domain.aircraft.AircraftEntity;
 import br.com.senior.VoeFacil.domain.aircraft.DTO.GetAircraftDTO;
-import br.com.senior.VoeFacil.domain.airport.AirportEntity;
 import br.com.senior.VoeFacil.domain.airport.DTO.GetAirportDTO;
 import br.com.senior.VoeFacil.domain.flight.FlightEntity;
 import br.com.senior.VoeFacil.domain.flight.FlightStatus;

@@ -46,6 +46,9 @@ public class FlightService {
     @Autowired
     private List<UpdateStatusValidator> updateStatusValidators;
 
+    public FlightService() {
+    }
+
     @Transactional(readOnly = true)
     public Page<GetFlightDTO> listAllFlights(Pageable pageable){
         return flightRepository.findAll(pageable).map(GetFlightDTO::new);
@@ -61,7 +64,7 @@ public class FlightService {
 
         var departureAirport = airportService.findEntityById(dto.departureAirportId());
         var arrivalAirport = airportService.findEntityById(dto.arrivalAirportId());
-        var aircraft = aircraftService.findEntityById(dto.aircraftId());
+        var aircraft = aircraftService.findAircraftEntityById(dto.aircraftId());
         var seats = seatService.findAllEntitiesByAircraft(aircraft);
 
         var flight = new FlightEntity(generateFlightNumber(), dto, departureAirport, arrivalAirport);

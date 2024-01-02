@@ -1,7 +1,9 @@
 package br.com.senior.VoeFacil.controller;
 
+import br.com.senior.VoeFacil.domain.flightticket.FlightTicketService;
 import br.com.senior.VoeFacil.domain.passenger.DTO.GetPassengerDTO;
 import br.com.senior.VoeFacil.domain.passenger.DTO.PostPassengerDTO;
+import br.com.senior.VoeFacil.domain.passenger.PassengerEntity;
 import br.com.senior.VoeFacil.domain.passenger.PassengerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -21,11 +24,10 @@ public class PassengerController {
     @Autowired
     private PassengerService passengerService;
 
-    @GetMapping
-    public ResponseEntity<Page<GetPassengerDTO>> listAllPassengers(Pageable paging) {
-        var page = passengerService.listAllPassengers(paging);
-        return ResponseEntity.ok(page);
-    }
+    @Autowired
+    private FlightTicketService flightTicketService;
+
+    //listAllPassengersByFlightId
 
     @PostMapping
     public ResponseEntity<GetPassengerDTO> createPassenger(@RequestBody @Valid PostPassengerDTO dto, UriComponentsBuilder uriBuilder) {
@@ -39,4 +41,5 @@ public class PassengerController {
         var passenger = passengerService.findPassengerById(id);
         return ResponseEntity.ok(passenger);
     }
+
 }

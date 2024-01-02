@@ -229,7 +229,7 @@ class FlightTicketServiceTest {
             seat.setSeatClass(SeatTypeEnum.FIRST_CLASS);
             when(seatService.findSeatEntityById(dto.seatId())).thenReturn(seat);
 
-            when(passengerService.findPassengerEntityById(dto.passengerId())).thenReturn(new PassengerEntity());;
+            when(passengerService.findPassengerEntityById(dto.passengerId())).thenReturn(new PassengerEntity());
 
             // Act and Assert
             var ex = assertThrows(ValidationException.class, () -> flightTicketService.createFlightTicket(dto));

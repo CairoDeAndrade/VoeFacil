@@ -146,7 +146,7 @@ class FlightServiceTest {
         void shouldCreateANewFlight() {
             // Arrange
             when(airportService.findEntityById(any())).thenReturn(new AirportEntity());
-            when(aircraftService.findEntityById(any())).thenReturn(new AircraftEntity());
+            when(aircraftService.findAircraftEntityById(any())).thenReturn(new AircraftEntity());
 
             var seats = List.of(new SeatEntity(), new SeatEntity());
             when(seatService.findAllEntitiesByAircraft(any())).thenReturn(seats);

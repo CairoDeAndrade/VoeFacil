@@ -1,10 +1,9 @@
 package br.com.senior.VoeFacil.domain.airport;
 
-import br.com.senior.VoeFacil.domain.aircraft.AircraftEntity;
-import br.com.senior.VoeFacil.domain.aircraft.DTO.GetAircraftDTO;
 import br.com.senior.VoeFacil.domain.airport.DTO.GetAirportDTO;
 import br.com.senior.VoeFacil.domain.airport.DTO.PostAirportDTO;
 import br.com.senior.VoeFacil.infra.exception.ResourceNotFoundException;
+import br.com.senior.VoeFacil.infra.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +25,10 @@ public class AirportService {
 
     @Transactional
     public GetAirportDTO createAirport(PostAirportDTO dto) {
+        if (dto == null) {
+            throw new ValidationException("Dados do aeroporto não podem ser nulos!");
+        }
+
         var airport = new AirportEntity(dto);
         repository.save(airport);
         return new GetAirportDTO(airport);
@@ -33,7 +36,7 @@ public class AirportService {
 
     @Transactional(readOnly = true)
     public GetAirportDTO findAirportById(UUID id){
-        var airport = repository.getReferenceById(id);
+        var airport = findEntityById(id);
         return new GetAirportDTO(airport);
     }
 

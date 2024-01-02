@@ -21,12 +21,6 @@ public class AircraftController {
     @Autowired
     private AircraftService aircraftService;
 
-    @GetMapping
-    public ResponseEntity<Page<GetAircraftDTO>> listAllAircrafts(@PageableDefault(size = 10, sort = {"airline"}) Pageable paging) {
-        var page = aircraftService.listAllAircraft(paging);
-        return ResponseEntity.ok(page);
-    }
-
     @PostMapping
     public ResponseEntity<GetAircraftDTO> createAircraft(@RequestBody @Valid PostAircraftDTO dto, UriComponentsBuilder uriBuilder) {
         var aircraftDTO = aircraftService.createAircraft(dto);

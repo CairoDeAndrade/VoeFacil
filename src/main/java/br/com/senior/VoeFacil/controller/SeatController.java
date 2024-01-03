@@ -1,15 +1,12 @@
 package br.com.senior.VoeFacil.controller;
 
 import br.com.senior.VoeFacil.domain.flightseat.DTO.GetFlightSeatDTO;
-import br.com.senior.VoeFacil.domain.flightseat.FlightSeatEntity;
 import br.com.senior.VoeFacil.domain.flightseat.FlightSeatService;
 import br.com.senior.VoeFacil.domain.seat.DTO.GetSeatDTO;
 import br.com.senior.VoeFacil.domain.seat.DTO.PostSeatDTO;
 import br.com.senior.VoeFacil.domain.seat.SeatService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
